@@ -33,18 +33,22 @@ SOFTWARE.
 #include "DCMI.h"
 #include "UART.h"
 
-uint8_t TX_counter = 0;
 uint32_t DCMI_data = 0xFECCDDAA;
-uint8_t UART_buffer[4];
+struct FIFO UART_buffer;
+uint8_t test_c = 0;
 
 
 void USART1_IRQHandler(){
 	if(USART1->SR & USART_SR_TXE){
-		transfer_data_UART(UART_buffer[TX_counter]);
-		TX_counter++;
-		if(TX_counter == 4){
-			TX_counter = 0;
-		}
+		transfer_data_UART(read_data_FIFO(&UART_buffer));
+		test_c++;
+	}
+	if(test_c == 8){
+		DCMI_data = 0xBCBCBCBC;
+	}
+	if(test_c == 16){
+		DCMI_data = 0xFECCDDAA;
+		test_c = 0;
 	}
 }
 
@@ -54,19 +58,16 @@ int main(void)
   start_GPIO();
   init_UART();
   //init_DCMI();
+
+  init_FIFO(&UART_buffer);
+
   while (1)
   {
-	  if(TX_counter == 0){
-		  UART_buffer[0] = 0xFF&DCMI_data;
-	  }
-	  if(TX_counter == 1){
-		  UART_buffer[1] = 0xFF&(DCMI_data>>8);
-	  }
-	  if(TX_counter == 2){
-		  UART_buffer[2] = 0xFF&(DCMI_data>>16);
-	  }
-	  if(TX_counter == 3){
-		  UART_buffer[3] = 0xFF&(DCMI_data>>24);
+	  if(1){
+		  write_data_FIFO(&UART_buffer, DCMI_data&0xFF);
+		  write_data_FIFO(&UART_buffer, (DCMI_data>>8)&0xFF);
+		  write_data_FIFO(&UART_buffer, (DCMI_data>>16)&0xFF);
+		  write_data_FIFO(&UART_buffer, (DCMI_data>>24)&0xFF);
 	  }
   }
 }

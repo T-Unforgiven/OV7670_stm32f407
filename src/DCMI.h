@@ -7,7 +7,6 @@
 #define IMG_WIDTH 680
 #define IMG_HEIGHT 480
 #define IMG_SIZE (IMG_WIDTH * IMG_HEIGHT * 2)
-#define BUF_SIZE (IMG_SIZE/400)
 
 void init_DCMI();
 void DCMI_start();

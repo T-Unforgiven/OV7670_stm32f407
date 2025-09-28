@@ -22,4 +22,19 @@ uint8_t read_data_UART(){
 	return data;
 }
 
+void init_FIFO(struct FIFO* f){
+	f->read_pointer = 0;
+	f->write_pointer = 0;
+}
 
+void write_data_FIFO(struct FIFO* f, uint8_t data){
+	f->buffer[f->write_pointer%FIFO_size] = data;
+	f->write_pointer++;
+}
+
+uint8_t read_data_FIFO(struct FIFO* f){
+	uint8_t data;
+	data = f->buffer[f->read_pointer%FIFO_size];
+	f->read_pointer++;
+	return data;
+}
