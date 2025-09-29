@@ -32,38 +32,33 @@ SOFTWARE.
 #include "GPIO.h"
 #include "DCMI.h"
 #include "UART.h"
+#include "I2C.h"
+#include "OV7670.h"
 
 uint32_t DCMI_data = 0xFECCDDAA;
 struct FIFO UART_buffer;
-uint8_t test_c = 0;
+uint8_t test = 0xAA;
 
 
 void USART1_IRQHandler(){
 	if(USART1->SR & USART_SR_TXE){
 		transfer_data_UART(read_data_FIFO(&UART_buffer));
-		test_c++;
 	}
-	if(test_c == 8){
-		DCMI_data = 0xBCBCBCBC;
-	}
-	if(test_c == 16){
-		DCMI_data = 0xFECCDDAA;
-		test_c = 0;
-	}
-}
 
+}
 
 int main(void)
 {
   start_GPIO();
   init_UART();
   //init_DCMI();
-
+  init_I2C();
+  //init_TIM_clk();
   init_FIFO(&UART_buffer);
 
   while (1)
   {
-	  if(1){
+	  if(0){
 		  write_data_FIFO(&UART_buffer, DCMI_data&0xFF);
 		  write_data_FIFO(&UART_buffer, (DCMI_data>>8)&0xFF);
 		  write_data_FIFO(&UART_buffer, (DCMI_data>>16)&0xFF);
