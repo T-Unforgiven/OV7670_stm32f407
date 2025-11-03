@@ -13,7 +13,7 @@ void init_I2C(){
 void write_data_I2C(uint8_t data, uint8_t adr, uint8_t reg){
 	I2C2->CR1 |= I2C_CR1_START;
 	while(!(I2C2->SR1 & I2C_SR1_SB));
-	I2C2->DR = adr&0xFE;
+	I2C2->DR = adr;
 	while(!(I2C2->SR1 & I2C_SR1_ADDR));
 	(void)I2C2->SR2;
 	while(!(I2C2->SR1 & I2C_SR1_TXE));

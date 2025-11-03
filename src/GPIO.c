@@ -18,7 +18,7 @@ void conf_GPIO(){
 	GPIOC->AFR[0] |= setAF(6,13) | setAF(7,13);
 	GPIOC->AFR[1] |= setAF(8,13) | setAF(9,13) | setAF(11,13);
 	GPIOB->OTYPER |= GPIO_OTYPER_OT_10 |  GPIO_OTYPER_OT_11; // open drain for I2C
-	GPIOB->PUPDR |= GPIO_PUPDR_PUPDR10_0 | GPIO_PUPDR_PUPDR11_0;
+	//GPIOB->PUPDR |= GPIO_PUPDR_PUPDR10_0 | GPIO_PUPDR_PUPDR11_0;
 }
 
 void start_GPIO(){

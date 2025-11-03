@@ -3,6 +3,10 @@
 #define OV7670_H_
 
 #include "stm32f4xx.h"
+#include "I2C.h"
+
+#define OV7670_write_adress 0x42
+#define OV7670_read_adress 0x43
 
 #define OV7670_REG_GAIN                (0x0U)   /* Def: 0x0; R/W: RW; AGC – Gain control gain setting */
 #define OV7670_REG_BLUE                (0x1U)   /* Def: 0x80; R/W: RW; AWB – Blue channel gain setting */
@@ -123,7 +127,7 @@
 #define OV7670_REG_GAM13               (0x87U)  /* Def: 0xBB; R/W: RW; Gamma Curve 13th Segment Input End Point 0x90 Output Value */
 #define OV7670_REG_GAM14               (0x88U)  /* Def: 0xD2; R/W: RW; Gamma Curve 14th Segment Input End Point 0xB0 Output Value */
 #define OV7670_REG_GAM15               (0x89U)  /* Def: 0xE5; R/W: RW; Gamma Curve 15th Segment Input End Point 0xD0 Output Value */
-#define OV7670_REG_RGB444              (0x8CU)  /* Def: 0x0; R/W: RW; Register 8C */
+//#define OV7670_REG_RGB444              (0x8CU)  /* Def: 0x0; R/W: RW; Register 8C */
 #define OV7670_REG_DM_LNL              (0x92U)  /* Def: 0x0; R/W: RW; Dummy Line low 8 bits */
 #define OV7670_REG_DM_LNH              (0x93U)  /* Def: 0x0; R/W: RW; Dummy Line high 8 bits */
 #define OV7670_REG_LCC6                (0x94U)  /* Def: 0x50; R/W: RW; Lens Correction Option 6 (effective only when LCC5[2] is high) */
@@ -157,5 +161,12 @@
 #define OV7670_REG_DUMMY               (0xFFU)
 
 void init_TIM_clk();
+void stop_camera_clk();
+void start_camera_clk();
+void reset_OV7670();
+void init_OV7670();
+void delay_45us();
+void delay_1us();
+
 
 #endif /* OV7670_H_ */
