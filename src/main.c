@@ -54,6 +54,7 @@ void USART1_IRQHandler(){
 		uint8_t command = read_data_UART();
 		if(command == START_comm){
 			Programm_State = 1;
+			DCMI->CR |=  DCMI_CR_CAPTURE;
 		}
 	}
 }
@@ -82,6 +83,7 @@ void DMA2_Stream1_IRQHandler(){
 	     Programm_State = 2;
 	     stop_camera_clk();
 	     DCMI_stop();
+	     while(DCMI->CR & DCMI_CR_ENABLE);
 	     DCMI_buffer.write_pointer += DCMI_FIFO_size;
 	 }
 }
@@ -92,27 +94,24 @@ int main(void)
   init_UART();
   init_UART_FIFO(&UART_buffer);
   init_UART_DMA(&UART_buffer.buffer[0]);
-
+  init_DMA_DCMI(&DCMI_buffer.buffer[0]);
+  init_DCMI();
   init_DCMI_FIFO(&DCMI_buffer);
-  for(uint32_t i = 0; i < DCMI_FIFO_size; i++){
-  	  write_data_DCMI_FIFO(&DCMI_buffer, 0x8CAA3577);
-  }
   Programm_State = 0;
-  //init_DMA_DCMI(&DCMI_buffer.buffer[0]);
-  //init_DCMI();
-  //init_I2C();
-  //init_TIM_clk();
+  init_I2C();
+  init_TIM_clk();
+  start_camera_clk();
+  reset_OV7670();
+  //start_camera_clk();
   //init_FIFO(&UART_buffer);
   //init_OV7670();
   //DCMI_start();
   while (1)
   {
 	  if(Programm_State == 1){//DCMI data transfer via DMA to 32-bit FIFO
-//		  start_camera_clk();
-//		  DCMI_start();
-//		  Start_DCMI_DMA();
-		  DCMI_buffer.write_pointer += DCMI_FIFO_size;
-		  Programm_State = 2;
+		  start_camera_clk();
+		  DCMI_start();
+		  Start_DCMI_DMA();
 	  }
 	  if(Programm_State == 2){//Processing data (convert 32-bit to 8-bit packages)
 		  DCMI_data = read_data_DCMI_FIFO(&DCMI_buffer);

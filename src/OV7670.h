@@ -167,6 +167,7 @@ void reset_OV7670();
 void init_OV7670();
 void delay_45us();
 void delay_1us();
+void delay_5ms();
 
 
 #endif /* OV7670_H_ */

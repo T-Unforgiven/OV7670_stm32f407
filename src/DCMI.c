@@ -4,8 +4,8 @@
 void init_DCMI(){
 	RCC->AHB2ENR |= RCC_AHB2ENR_DCMIEN;
 	DCMI->CR &= ~DCMI_CR_ENABLE;
-	DCMI->IER |= DCMI_IER_FRAME_IE | DCMI_IER_OVF_IE | DCMI_IER_ERR_IE;
-	DCMI->CR |= DCMI_CR_ESS | DCMI_CR_CM | DCMI_CR_CAPTURE; // embedded sync, snapshot mode(single frame), enable capture
+	//DCMI->IER |= DCMI_IER_FRAME_IE | DCMI_IER_OVF_IE | DCMI_IER_ERR_IE;
+	DCMI->CR |=  DCMI_PCKPolarity_Rising | DCMI_VSPolarity_Low | DCMI_HSPolarity_High | DCMI_CR_CM | DCMI_CR_CAPTURE; // snapshot mode(single frame), enable capture
 }
 
 void init_DMA_DCMI(uint32_t* p){

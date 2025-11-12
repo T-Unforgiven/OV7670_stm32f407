@@ -95,23 +95,36 @@ const uint8_t OV7670_reg[][2] =
   {OV7670_REG_DUMMY,            OV7670_REG_DUMMY},
 };
 
-/* camera clk 1.346 MHz */
+/* camera clk 6.72 MHz */
 
 void init_TIM_clk(){
-	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
-	TIM2->PSC = 1-1;
-	TIM2->ARR = 20-1;
-	TIM2->CCMR1 |= TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2;
-	TIM2->CCER |= TIM_CCER_CC2E;
-	TIM2->CCR2 = 10;
+//	RCC->APB1ENR |= RCC_APB1ENR_TIM2EN;
+//	TIM2->PSC = 1-1;
+//	TIM2->ARR = 10-1;
+//	TIM2->CCMR1 |= TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2;
+//	TIM2->CCER |= TIM_CCER_CC2E;
+//	TIM2->CCR2 = 5;
+
+	//PA7 -> TIM1_CH1N advanced TIM
+	RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
+	TIM1->ARR = 8-1;
+	TIM1->PSC = 1-1;
+	TIM1->CCR1 = 4;
+	TIM1->CCMR1 |= TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1;
+	TIM1->CCER |= TIM_CCER_CC1NE | TIM_CCER_CC1P;
+	TIM1->CCER |= TIM_CCER_CC1E;
+	TIM1->BDTR |= TIM_BDTR_MOE | TIM_BDTR_OSSR;
+	//TIM1->DIER |= TIM_DIER_UIE;
+	//NVIC_EnableIRQ(TIM1_UP_TIM10_IRQn);
+	//NVIC_SetPriority(TIM1_UP_TIM10_IRQn, 0);
 }
 
 void stop_camera_clk(){
-	TIM2->CR1 &= ~TIM_CR1_CEN;
+	TIM1->CR1 &= ~TIM_CR1_CEN;
 }
 
 void start_camera_clk(){
-	TIM2->CR1 |= TIM_CR1_CEN;
+	TIM1->CR1 |= TIM_CR1_CEN;
 }
 
 void delay_1us(){
@@ -124,6 +137,14 @@ void delay_45us(){
 	volatile int i = 200;
 	while(i > 0)
 		i--;
+}
+
+void delay_5ms(){
+	volatile int i = 120;
+	while(i>0){
+		delay_45us();
+		i--;
+	}
 }
 
 void reset_OV7670(){
